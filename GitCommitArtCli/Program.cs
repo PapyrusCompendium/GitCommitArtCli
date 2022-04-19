@@ -30,20 +30,20 @@ namespace GitCommitArtCli {
         private static void DrawTextArt() {
             var textRenderService = new TextRendering(_textRenderingConfig);
             using var tempGitClone = new TempLocalGitService(_gitConfig);
+            tempGitClone.Commit(DateTimeOffset.FromUnixTimeSeconds(903102479), 1);
 
             Console.Write("Text: ");
             var artText = Console.ReadLine();
             var commitPixelString = textRenderService.RenderPixelLetters(artText);
 
-            var commitShading = 10;
+            var commitShading = 43;
             foreach (var letter in commitPixelString) {
                 foreach (var pixel in letter.Pixels) {
                     tempGitClone.Commit(pixel.Date, commitShading);
                 }
-                tempGitClone.PushNetwork();
-                commitShading += 5;
+                //commitShading += 1;
             }
-
+            tempGitClone.PushNetwork();
         }
 
         private static void CleanCanvas() {

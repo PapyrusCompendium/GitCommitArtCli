@@ -48,6 +48,10 @@ namespace GitCommitArtCli.Services {
                     new Signature(_identity, date), new CommitOptions() {
                         AllowEmptyCommit = true
                     });
+
+                if (_commits >= 250) {
+                    PushNetwork();
+                }
                 _commits++;
             }
 
