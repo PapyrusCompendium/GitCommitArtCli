@@ -16,6 +16,8 @@ namespace GitCommitArtCli.Services {
             _gitHubClient = new GitHubClient(new ProductHeaderValue("GitCommitArtCli")) {
                 Credentials = new Credentials(gitConfig.AccessToken)
             };
+
+            Log.Info($"Configured Github Api Token {new string(gitConfig.AccessToken.Take(4).ToArray())}");
         }
 
         public async Task HardResetArtBranch() {

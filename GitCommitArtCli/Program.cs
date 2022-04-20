@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 
 using GitCommitArtCli.Models;
 using GitCommitArtCli.Services;
@@ -21,37 +19,25 @@ namespace GitCommitArtCli {
             var configuration = configBuilder.Build();
             _gitConfig = new GitConfig(configuration);
             _textRenderingConfig = new TextRenderingConfig(configuration);
-            Console.WriteLine($"Loaded config for {_gitConfig.Username}, and font {_textRenderingConfig.FontImage}");
+            Log.Info($"Loaded config for {_gitConfig.Username}\nLoaded Font {_textRenderingConfig.FontImage}");
 
-            CleanCanvas();
-            DrawTextArt();
+            // CleanCanvas();
+
+            DrawArt();
         }
 
-        private static void DrawTextArt() {
-            var textRenderService = new TextRendering(_textRenderingConfig);
-            using var tempGitClone = new TempLocalGitService(_gitConfig);
-            tempGitClone.Commit(DateTimeOffset.FromUnixTimeSeconds(903102479), 1);
+        private static void DrawArt() {
+            // tempGitClone.BatchPushCommit(DateTimeOffset.FromUnixTimeSeconds(903102479), 1);
 
-            Console.Write("Text: ");
-            var artText = Console.ReadLine();
-            var commitPixelString = textRenderService.RenderPixelLetters(artText);
+            using var gitRender = new GitRenderer(_gitConfig, _textRenderingConfig);
 
-            var commitShading = 43;
-            foreach (var letter in commitPixelString) {
-                foreach (var pixel in letter.Pixels) {
-                    tempGitClone.Commit(pixel.Date, commitShading);
-                }
-                //commitShading += 1;
-            }
-            tempGitClone.PushNetwork();
-        }
+            gitRender.DrawClock();
 
-        private static void CleanCanvas() {
-            Console.WriteLine("Cleaning Art Canvas...");
-            var githubApi = new GithubApiService(_gitConfig);
+            //Console.Write("Text: ");
+            //var artText = Console.ReadLine();
+            //gitRender.DrawText(artText);
 
-            githubApi.HardResetArtBranch().Wait();
-            Console.WriteLine("Canvas is clear!");
+            //Console.ReadLine();
         }
     }
 }
